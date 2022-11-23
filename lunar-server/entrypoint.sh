@@ -1,0 +1,6 @@
+echo Migrating...
+python manage.py migrate
+
+echo 
+echo Serving...
+gunicorn --bind :80 --workers 4 snackbook.wsgi

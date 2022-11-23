@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "lunar-server"
+version = "0.1.0"
+description = ""
+authors = ["Bjarke Sporring <work.bjarke@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+djangorestframework = "^3.14.0"
+Django = "^4.1.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

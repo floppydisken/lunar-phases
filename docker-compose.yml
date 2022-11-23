@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=lunar
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - "5432:5432/tcp"
+    volumes:
+      - lunar-vol:/var/lib/postgresql/data
+
+  lunar-server:
+    build:
+      context: ./lunar-server
+    environment:
+      - ENV=production
+
+    depends_on:
+      - postgres
+
+  lunar-client:
+    build:
+      context: ./lunar-client
+
+    depends_on:
+      - lunar-server
+
+volumes:
+  lunar-vol:
