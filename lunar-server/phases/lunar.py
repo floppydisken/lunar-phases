@@ -2,70 +2,63 @@ from datetime import datetime
 
 import ephem
 
+ORDERED_PHASES = [
+    "New Moon",
+    "Waxing Crescent",
+    "First Quarter",
+    "Waxing Gibbous",
+    "Full Moon",
+    "Waning Gibbous",
+    "Last Quarter",
+    "Waning Crescent"
+]
 
-class PhaseRange:
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
+RANGE_LEN = (1 / len(ORDERED_PHASES)) / 2
+
+PHASE_RANGES = {
+    "new_moon":        [1 - RANGE_LEN,  RANGE_LEN * 1],  # This spills over
+    "waxing_cresent":  [RANGE_LEN * 1,  RANGE_LEN * 3],
+    "first_quarter":   [RANGE_LEN * 3,  RANGE_LEN * 5],
+    "waxing_gibbous":  [RANGE_LEN * 5,  RANGE_LEN * 7],
+    "full_moon":       [RANGE_LEN * 7,  RANGE_LEN * 9],
+    "waning_gibbous":  [RANGE_LEN * 9,  RANGE_LEN * 11],
+    "last_quarter":    [RANGE_LEN * 11, RANGE_LEN * 13],
+    "waning_crescent": [RANGE_LEN * 13, RANGE_LEN * 15]
+}
+
+
+# It's called the_range, since I don't want to clash with the range function
+def in_range(val: float, the_range: [float, float]):
+    start, end = the_range
+    return val > start and val < end
 
 
 class LunarPhase:
     """
-    The phases of the moon. Represented by looking in a timeperiod +-1 day
-    from the given datetime.
+    Each phase is split into its equal 8th part and then
 
     If a phase "moment" is inside the period, then the phase is equal to the
 
     This strategy is based on this article https://minkukel.com/en/various/calculating-moon-phase/
     """
 
-    _ordered_phases = [
-        "New Moon",
-        "Waxing Crescent",
-        "First Quarter",
-        "Waxing Gibbous",
-        "Full Moon",
-        "Waning Gibbous",
-        "Last Quarter",
-        "Waning Crescent"
-    ]
-
     def __init__(self, date: datetime):
-        self.phase = self._find_phase(date)
+        self.date = date
 
-    def _find_phase(self, date: datetime):
-        print(date)
+        self._moon = ephem.Moon()
+        self._moon.compute(date)
 
-        # TODO: Simple graph to demonstrate the phases and range_len
-        range_len = (1 / len(self._ordered_phases)) / 2
+        self.phase = self._find_phase()
 
-        phases = {
-            "new_moon": [1 - range_len, range_len * 1],  # This spills over
-            "waxing_cresent": [range_len * 1, range_len * 3],
-            "first_quarter": [range_len * 3, range_len * 5],
-            "waxing_gibbous": [range_len * 5, range_len * 7],
-            "full_moon": [range_len * 7, range_len * 9],
-            "waning_gibbous": [range_len * 9, range_len * 11],
-            "last_quarter": [range_len * 11, range_len * 13],
-            "waning_crescent": [range_len * 13, range_len * 15]
-        }
-
-        moon = ephem.Moon()
-        moon.compute(date)
-
-        phase_pct = moon.phase
+    def _find_phase(self):
+        phase_pct = self._moon.phase
 
         phase = None
 
-        for phase_name, phase_range in phases.items():
-            start, end = phase_range
-
-            if phase_pct > start and phase_pct < end:
+        for phase_name, phase_range in PHASE_RANGES.items():
+            if in_range(phase_pct, phase_range):
                 phase = phase_name
                 break
-
-        print("Phases", phases)
-        print(f"Found phase {phase}")
 
         return phase
 
