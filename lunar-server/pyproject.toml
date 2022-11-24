@@ -8,8 +8,10 @@ authors = ["Bjarke Sporring <work.bjarke@gmail.com>"]
 python = "^3.10"
 djangorestframework = "^3.14.0"
 Django = "^4.1.3"
+ephem = "^4.1.3"
 
 [tool.poetry.dev-dependencies]
+python-lsp-server = {extras = ["all"], version = "^1.6.0"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
