@@ -15,4 +15,7 @@ class Command(BaseCommand):
             return
         except User.DoesNotExist:
             print(f"Creating user '{email}' with password '{password}'")
-            User.objects.create(username=email, password=password, email=email)
+            User.objects.create_user(
+                username=email,
+                password=password,
+                email=email)
