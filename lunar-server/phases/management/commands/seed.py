@@ -7,12 +7,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         email = "vasilii@safeex.com"
+        password = "123456Pass"
 
         try:
             user = User.objects.get(email=email)
             print(f"{email} already exists. Skipping mock creation.")
             return
         except User.DoesNotExist:
-            print(f"Creating user '{email}' with password '123456'")
-            User.objects.create(username="vasilii@safeex.com",
-                                password="123456", email="vasilii@safeex.com")
+            print(f"Creating user '{email}' with password '{password}'")
+            User.objects.create(username=email, password=password, email=email)
