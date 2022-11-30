@@ -1,4 +1,4 @@
-import ephem
+from dataclasses import dataclass
 
 from enum import Enum
 from datetime import datetime, timezone
@@ -8,14 +8,8 @@ from skyfield.framelib import ecliptic_frame
 from .utils import map_range
 
 ORDERED_PHASES = [
-    "New Moon",
-    "Waxing Crescent",
-    "First Quarter",
-    "Waxing Gibbous",
-    "Full Moon",
-    "Waning Gibbous",
-    "Last Quarter",
-    "Waning Crescent"
+    "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous",
+    "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"
 ]
 
 RANGE_LEN = (1 / len(ORDERED_PHASES)) / 2
@@ -33,13 +27,13 @@ class LunarPhases(str, Enum):
 
 
 PHASE_RANGES = {
-    LunarPhases.NEW_MOON:        [1 - RANGE_LEN,  RANGE_LEN * 1],
-    LunarPhases.WAXING_CRESCENT: [RANGE_LEN * 1,  RANGE_LEN * 3],
-    LunarPhases.FIRST_QUARTER:   [RANGE_LEN * 3,  RANGE_LEN * 5],
-    LunarPhases.WAXING_GIBBOUS:  [RANGE_LEN * 5,  RANGE_LEN * 7],
-    LunarPhases.FULL_MOON:       [RANGE_LEN * 7,  RANGE_LEN * 9],
-    LunarPhases.WANING_GIBBOUS:  [RANGE_LEN * 9,  RANGE_LEN * 11],
-    LunarPhases.LAST_QUARTER:    [RANGE_LEN * 11, RANGE_LEN * 13],
+    LunarPhases.NEW_MOON: [1 - RANGE_LEN, RANGE_LEN * 1],
+    LunarPhases.WAXING_CRESCENT: [RANGE_LEN * 1, RANGE_LEN * 3],
+    LunarPhases.FIRST_QUARTER: [RANGE_LEN * 3, RANGE_LEN * 5],
+    LunarPhases.WAXING_GIBBOUS: [RANGE_LEN * 5, RANGE_LEN * 7],
+    LunarPhases.FULL_MOON: [RANGE_LEN * 7, RANGE_LEN * 9],
+    LunarPhases.WANING_GIBBOUS: [RANGE_LEN * 9, RANGE_LEN * 11],
+    LunarPhases.LAST_QUARTER: [RANGE_LEN * 11, RANGE_LEN * 13],
     LunarPhases.WANING_CRESCENT: [RANGE_LEN * 13, RANGE_LEN * 15]
 }
 
@@ -54,6 +48,7 @@ def in_range(val: float, the_range: [float, float]):
         else val > end or val <= start
 
 
+# This is designated for the
 PHASES_ASCII = """
 @@ Phases of the Moon @@  11/96  (c)jgs
 
@@ -114,13 +109,14 @@ PHASES_ASCII = """
 """
 
 
-class MoonResult:
-    def __init__(self, illumination_pct, phase_pct):
-        self.illumination_pct = illumination_pct
-        self.phase_pct = phase_pct
+@dataclass
+class PhaseResult:
+    illumination_pct: int
+    phase_pct: int
 
 
 class SkyFieldMoonProvider:
+
     def __init__(self):
         pass
 
@@ -132,6 +128,8 @@ class SkyFieldMoonProvider:
         ts = load.timescale()
         t = ts.from_datetime(date)
 
+        # Beware this actually downloads a database if
+        # it does not exist in the root folder.
         eph = load('de421.bsp')
         sun, moon, earth = eph['sun'], eph['moon'], eph['earth']
 
@@ -148,7 +146,14 @@ class SkyFieldMoonProvider:
         print(f"Phase (0°–360°): {phase:.1f}")
         print(f"Percent illuminated: {percent:.1f}%")
 
-        return MoonResult(percent, map_range(phase, 0, 360, 0, 1))
+        return PhaseResult(percent, map_range(phase, 0, 360, 0, 1))
+
+
+@dataclass
+class LunarPhaseResult:
+    illumination_pct: float
+    phase_pct: float
+    phase_name: str
 
 
 class LunarPhase:
@@ -167,16 +172,17 @@ class LunarPhase:
         self.phase = self._find_phase()
 
     def _find_phase(self):
-        phase_pct = self._moon_provider.phase(
-            self.date.astimezone(timezone.utc)).phase_pct
+        result = self._moon_provider.phase(self.date.astimezone(timezone.utc))
 
         phase = None
 
-        print(f"{phase_pct} %")
+        print(f"{result.phase_pct} %")
         for phase_name, phase_range in PHASE_RANGES.items():
             print(f"{phase_name}: {phase_range}")
-            if in_range(phase_pct, phase_range):
-                phase = phase_name
+            if in_range(result.phase_pct, phase_range):
+                phase = f"{phase_name}"
                 break
 
-        return phase
+        return LunarPhaseResult(result.illumination_pct,
+                                result.phase_pct,
+                                phase)
