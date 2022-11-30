@@ -37,8 +37,6 @@ PHASE_RANGES = {
     LunarPhases.WANING_CRESCENT: [RANGE_LEN * 13, RANGE_LEN * 15]
 }
 
-# It's called the_range, since I don't want to clash with the range function
-
 
 def in_range(val: float, the_range: [float, float]):
     start, end = the_range
@@ -48,7 +46,6 @@ def in_range(val: float, the_range: [float, float]):
         else val > end or val <= start
 
 
-# This is designated for the
 PHASES_ASCII = """
 @@ Phases of the Moon @@  11/96  (c)jgs
 
