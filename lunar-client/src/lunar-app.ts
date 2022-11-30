@@ -4,7 +4,7 @@ import { Api, LunarPhaseResult } from "./api";
 
 @customElement("lunar-app")
 export class LunarApp extends LitElement {
-  static style = css`
+  static styles = css`
     .page {
       min-width: 100vw;
       min-height: 100vh;
@@ -29,8 +29,6 @@ export class LunarApp extends LitElement {
     const password: HTMLInputElement | null =
       this.shadowRoot?.querySelector("#password");
 
-    console.log(username, password);
-
     if (username && password) {
       this.api.setAuth(username.value, password.value);
       try {
@@ -39,6 +37,8 @@ export class LunarApp extends LitElement {
       } catch (e) {
         console.warn("Could not fetch lunar phase with error", e);
       }
+    } else {
+      console.warn("Could not find either (or both) #username or #password input fields");
     }
   }
 

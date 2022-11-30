@@ -141,7 +141,7 @@ class SkyFieldMoonProvider:
         _, mlon, _ = m.frame_latlon(ecliptic_frame)
         phase = (mlon.degrees - slon.degrees) % 360.0
 
-        percent = 100.0 * m.fraction_illuminated(sun)
+        percent = m.fraction_illuminated(sun)
 
         print(f"Phase (0°–360°): {phase:.1f}")
         print(f"Percent illuminated: {percent:.1f}%")
