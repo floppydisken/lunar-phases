@@ -1,3 +1,5 @@
+until nc -z postgres 5432; do echo "Waiting for Postgres..." && sleep 1; done 
+
 echo Migrating...
 python manage.py migrate
 

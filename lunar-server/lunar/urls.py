@@ -20,5 +20,5 @@ from phases.views import LunarView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("lunarphases/", LunarView.as_view(), name="lunarphases"),
+    path("api/lunarphase", LunarView.as_view()),
 ]

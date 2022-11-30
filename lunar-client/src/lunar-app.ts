@@ -24,9 +24,9 @@ export class LunarApp extends LitElement {
   }
 
   async login() {
-    const username: HTMLInputElement | null =
+    const username: HTMLInputElement | null | undefined =
       this.shadowRoot?.querySelector("#username");
-    const password: HTMLInputElement | null =
+    const password: HTMLInputElement | null | undefined =
       this.shadowRoot?.querySelector("#password");
 
     if (username && password) {
@@ -55,8 +55,8 @@ export class LunarApp extends LitElement {
         </div>`
       : html`<div class="page">
           <div>
-            <input id="username" type="text" />
-            <input id="password" type="password" />
+            <input placeholder="Email..." id="username" type="text" />
+            <input placeholder="Password..." id="password" type="password" />
             <button @click="${this.login}">Login</button>
           </div>
         </div>`}`;

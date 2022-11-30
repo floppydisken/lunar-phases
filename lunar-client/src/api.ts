@@ -5,7 +5,7 @@ export type LunarPhaseResult = {
 };
 
 export class Api {
-  base: string = "http://0.0.0.0:7000";
+  base: string = "http://0.0.0.0:7000/api";
   token: string = "";
 
   authHeader?: any;
@@ -20,7 +20,7 @@ export class Api {
       console.warn("Not authorized to view lunar phase. Please login.");
     }
 
-    const response = await fetch(`${this.base}/lunarphases/`, {
+    const response = await fetch(`${this.base}/lunarphase`, {
       headers: { ...this.authHeader },
     });
 

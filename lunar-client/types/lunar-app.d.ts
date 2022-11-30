@@ -1,16 +1,11 @@
 import { LitElement } from "lit";
-export type LunarPhaseResult = {
-    phase: string;
-    illuminationPct: number;
-    phasePct: number;
-};
 export declare class LunarApp extends LitElement {
-    static style: import("lit").CSSResult;
+    static styles: import("lit").CSSResult;
     private api;
-    private isAuthenticated;
     private result?;
+    private isAuthenticated;
     constructor();
-    login(): void;
+    login(): Promise<void>;
     render(): import("lit-html").TemplateResult<1>;
 }
 declare global {

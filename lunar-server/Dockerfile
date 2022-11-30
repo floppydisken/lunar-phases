@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     python3-wheel && \
     pip install gunicorn
 
+RUN apt-get install netcat -y
+
 # System deps:
 RUN pip install "poetry==$POETRY_VERSION"
 

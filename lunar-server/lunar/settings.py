@@ -94,7 +94,7 @@ DATABASES = {
         'NAME': 'lunar',
         'USER': 'lunar',
         'PASSWORD': 'lunar',
-        'HOST': '127.0.0.1',
+        'HOST': 'postgres',
         'PORT': '5432',
     }
 }

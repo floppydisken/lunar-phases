@@ -8,22 +8,23 @@ services:
       - POSTGRES_PASSWORD=lunar
       - POSTGRES_DB=lunar
     ports:
-      - "5432:5432/tcp"
+      - "5432:5432"
     volumes:
       - lunar-vol:/var/lib/postgresql/data
 
   lunar-server:
     build:
       context: ./lunar-server
-    environment:
-      - ENV=production
-
+    ports:
+      - "7000:80"
     depends_on:
       - postgres
 
   lunar-client:
     build:
       context: ./lunar-client
+    ports:
+      - "6999:80"
 
 
 volumes:
