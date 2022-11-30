@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import datetime
 
-from .lunar import LunarPhase, LunarPhases
+from .lunar import LunarPhase, LunarPhases, in_range
 from .utils import map_range, clamp
 
 
@@ -18,30 +18,12 @@ class UtilTests(TestCase):
         self.assertEqual(map_range(361, 0, 360, 0, 1), 1)
 
 
-class LunarPhasesTests(TestCase):
-    def test_phase_should_be_new_moon(self):
-        date = datetime(2022, 11, 24)
-        phase = LunarPhase(date)
+class InRangeTests(TestCase):
+    def test_flipped_values(self):
+        self.assertFalse(in_range(0.25, [0.9, 0.1]))
+        self.assertTrue(in_range(0.91, [0.9, 0.1]))
+        self.assertTrue(in_range(0.09, [0.9, 0.1]))
 
-        self.assertEqual(LunarPhases.NEW_MOON, phase.phase)
-
-    def test_phase_should_be_full_moon(self):
-        date = datetime(2022, 12, 30)
-        phase = LunarPhase(date)
-
-        self.assertEqual(LunarPhases.FULL_MOON, phase.phase)
-
-    def test_phase_should_be_first_quarter(self):
-        pass
-
-    def test_phase_should_be_last_quarter(self):
-        pass
-
-    def test_phase_should_be_waning_gibbous(self):
-        pass
-
-    def test_phase_should_be_waxing_crescent(self):
-        pass
-
-    def test_phase_should_be_waning_crescent(self):
-        pass
+    def test_regular_values(self):
+        self.assertTrue(in_range(0.24, [0.23, 0.25]))
+        self.assertFalse(in_range(0.22, [0.23, 0.25]))

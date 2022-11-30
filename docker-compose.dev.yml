@@ -12,22 +12,5 @@ services:
     volumes:
       - lunar-vol:/var/lib/postgresql/data
 
-  lunar-server:
-    build:
-      context: ./lunar-server
-    ports:
-      - "7000:80"
-    depends_on:
-      - postgres
-    environment:
-      - POSTGRES_HOST=postgres
-
-  lunar-client:
-    build:
-      context: ./lunar-client
-    ports:
-      - "80:80"
-
-
 volumes:
   lunar-vol:

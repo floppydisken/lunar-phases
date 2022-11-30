@@ -41,9 +41,14 @@ PHASE_RANGES = {
 def in_range(val: float, the_range: [float, float]):
     start, end = the_range
 
-    return val >= start and val < end \
-        if start < end \
-        else val > end or val <= start
+    flip = start > end
+
+    result = val >= start and val <= end
+
+    if flip:
+        result = val >= start or val <= end
+
+    return result
 
 
 PHASES_ASCII = """
@@ -175,7 +180,7 @@ class LunarPhase:
 
         print(f"{result.phase_pct} %")
         for phase_name, phase_range in PHASE_RANGES.items():
-            print(f"{phase_name}: {phase_range}")
+            print(f"{phase_name}: {phase_range} {result.phase_pct}")
             if in_range(result.phase_pct, phase_range):
                 phase = f"{phase_name}"
                 break
