@@ -3,11 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/my-element.es.js",
+  "main": "dist/lunar-app.es.js",
   "exports": {
-    ".": "./dist/my-element.es.js"
+    ".": "./dist/lunar-app.es.js"
   },
-  "types": "types/my-element.d.ts",
+  "types": "types/lunar-app.d.ts",
   "files": [
     "dist",
     "types"
@@ -17,7 +17,9 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
-    "lit": "^2.4.0"
+    "@vaadin/router": "^1.7.4",
+    "lit": "^2.4.0",
+    "ts-lit-plugin": "^1.2.1"
   },
   "devDependencies": {
     "typescript": "^4.6.4",
