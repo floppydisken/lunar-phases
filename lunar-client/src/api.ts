@@ -1,18 +1,29 @@
+export type LunarPhaseResult = {
+  phaseName: string;
+  illuminationPct: number;
+  phasePct: number;
+};
+
 export class Api {
-  base: string = "http://0.0.0.0";
+  base: string = "http://0.0.0.0:7000";
   token: string = "";
 
-  /**
-   * Very basic, rather shitty way of handling authentication.
-   * But good enough for this project.
-   */
-  async signIn(email: string, password: string) {
-    const response = await fetch(`${this.base}/sign-in`, {
-      headers: { Authenticate: `Basic ${email}:${password}` },
+  authHeader?: any;
+
+  setAuth(email: string, password: string) {
+    const loginPair = btoa(`${email}:${password}`);
+    this.authHeader = { Authorization: `Basic ${loginPair}` };
+  }
+
+  async fetchLunarPhase() {
+    if (!this.authHeader) {
+      console.warn("Not authorized to view lunar phase. Please login.");
+    }
+
+    const response = await fetch(`${this.base}/lunarphases/`, {
+      headers: { ...this.authHeader },
     });
 
-    this.token = (await response.json()).token;
-
-    return this.token;
+    return await response.json() as LunarPhaseResult;
   }
 }
