@@ -28,7 +28,7 @@ services:
     ports:
       - "7001:80"
 
-  nginx: 
+  reverse-proxy: 
     build:
       context: ./
       dockerfile: ./nginx.dockerfile
