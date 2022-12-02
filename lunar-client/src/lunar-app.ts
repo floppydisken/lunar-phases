@@ -11,6 +11,13 @@ export class LunarApp extends LitElement {
       display: grid;
       place-items: center;
     }
+
+    .content {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+      padding: 1rem;
+    }
   `;
 
   private api: Api;
@@ -23,23 +30,16 @@ export class LunarApp extends LitElement {
     this.api = new Api();
   }
 
-  async login() {
-    const username: HTMLInputElement | null | undefined =
-      this.shadowRoot?.querySelector("#username");
-    const password: HTMLInputElement | null | undefined =
-      this.shadowRoot?.querySelector("#password");
+  async connectedCallback(): Promise<void> {
+      super.connectedCallback();
+      this.refreshLunarPhase();
+  }
 
-    if (username && password) {
-      this.api.setAuth(username.value, password.value);
-      try {
-        this.result = await this.api.fetchLunarPhase();
-        this.requestUpdate();
-      } catch (e) {
-        console.warn("Could not fetch lunar phase with error", e);
-      }
-    } else {
-      console.warn("Could not find either (or both) #username or #password input fields");
-    }
+  async refreshLunarPhase() {
+    setInterval(async () => {
+      this.result = await this.api.fetchLunarPhase();
+      this.requestUpdate();
+    }, 1000); 
   }
 
   render() {
@@ -47,19 +47,15 @@ export class LunarApp extends LitElement {
       ? html`<div class="page">
           ${this.result
             ? html`
-                <h1>Phase: ${this.result.phaseName}</h1>
-                <h1>Illuminated: ${this.result.illuminationPct * 100}%</h1>
-                <h1>Phase %: ${this.result.phasePct * 100}%</h1>
+                <div class="content">
+                  <h1>Phase: ${this.result.phaseName}</h1>
+                  <h1>Illuminated: ${this.result.illuminationPct * 100}%</h1>
+                  <h1>Phase %: ${this.result.phasePct * 100}%</h1>
+                </div>
               `
             : ``}
         </div>`
-      : html`<div class="page">
-          <div>
-            <input placeholder="Email..." id="username" type="text" />
-            <input placeholder="Password..." id="password" type="password" />
-            <button @click="${this.login}">Login</button>
-          </div>
-        </div>`}`;
+      : html`<div>Please login...</div>`}`;
   }
 }
 
