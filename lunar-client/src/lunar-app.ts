@@ -36,10 +36,13 @@ export class LunarApp extends LitElement {
   }
 
   async refreshLunarPhase() {
-    setInterval(async () => {
+    // This will eventually reach stackoverflow. 
+    // This is good enough for this project.
+    setTimeout(async () => {
       this.result = await this.api.fetchLunarPhase();
       this.requestUpdate();
-    }, 1000); 
+      this.refreshLunarPhase(); 
+    }, 2000);
   }
 
   render() {
@@ -55,7 +58,7 @@ export class LunarApp extends LitElement {
               `
             : ``}
         </div>`
-      : html`<div>Please login...</div>`}`;
+      : html`<div class="page">Please login...</div>`}`;
   }
 }
 
