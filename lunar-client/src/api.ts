@@ -1,3 +1,9 @@
+export class UnauthorizedError extends Error {}
+
+enum HTTPStatusCodes {
+  Unauthorized = 401
+}
+
 export type LunarPhaseResult = {
   phaseName: string;
   illuminationPct: number;
@@ -5,7 +11,7 @@ export type LunarPhaseResult = {
 };
 
 export class Api {
-  base: string = "http://0.0.0.0:7000/api";
+  base: string = "http://127.0.0.1/api";
   token: string = "";
 
   authHeader?: any;
@@ -23,6 +29,10 @@ export class Api {
     const response = await fetch(`${this.base}/lunarphase`, {
       headers: { ...this.authHeader },
     });
+
+    if (response.status === HTTPStatusCodes.Unauthorized) {
+      throw new UnauthorizedError(response.statusText);
+    }
 
     return await response.json() as LunarPhaseResult;
   }

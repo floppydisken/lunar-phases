@@ -26,7 +26,17 @@ services:
     build:
       context: ./lunar-client
     ports:
+      - "7001:80"
+
+  nginx: 
+    build:
+      context: ./
+      dockerfile: ./nginx.dockerfile
+    ports:
       - "80:80"
+    depends_on:
+      - lunar-client
+      - lunar-server
 
 
 volumes:
