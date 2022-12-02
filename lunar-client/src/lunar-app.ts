@@ -36,12 +36,15 @@ export class LunarApp extends LitElement {
   }
 
   async refreshLunarPhase() {
-    // This will eventually reach stackoverflow. 
-    // This is good enough for this project.
-    setTimeout(async () => {
+    const refresh = async () => {
       this.result = await this.api.fetchLunarPhase();
       this.requestUpdate();
-      this.refreshLunarPhase(); 
+    }
+
+    await refresh();
+
+    setInterval(async () => {
+      refresh();
     }, 2000);
   }
 
